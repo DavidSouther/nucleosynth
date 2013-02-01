@@ -20,7 +20,7 @@ axes =
 svg = ddd.select \#chart .append \svg
 	.attr \width, width + margin.left + margin.right
 	.attr \height, height + margin.top + margin.bottom
-	.style \background, \black
+	.style \background, "url('dfb.png') black"
 defs = svg.append \svg:defs
 
 ddd.csv "hr.csv", !(error, stars)->
