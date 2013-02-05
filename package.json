@@ -1,0 +1,48 @@
+{
+  "name": "nucleosynth",
+  "title": "Nucleo",
+  "description": "Nucleosynthetic Elements",
+  "version": "0.1.0",
+  "homepage": "https://github.com/southerd/nucleosynth",
+  "author": {
+    "name": "David Souther",
+    "email": "davidsouther@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/southerd/nucleosynth.git"
+  },
+  "bugs": {
+    "url": "https://github.com/southerd/nucleosynth/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/southerd/nucleosynth/blob/master/LICENSE-MIT"
+    }
+  ],
+  "main": "lib/nucleosynth",
+  "engines": {
+    "node": "*"
+  },
+  "scripts": {
+    "test": "grunt test",
+    "start": "node lib/server/nucleosynth.js"
+  },
+  "dependencies": {
+    "jquery": ">= 1",
+    "superscore": "~0.3.0",
+    "jefri": "~1.0.0",
+    "jefri-server": "~1.0.0",
+    "express": "*",
+    "nconf": "*"
+  },
+  "devDependencies": {
+    "grunt": "0.4.0rc4",
+    "grunt-contrib": "*",
+    "grunt-livescript": "*",
+    "grunt-testacular": "*",
+    "connect": "*"
+  },
+  "keywords": []
+}
