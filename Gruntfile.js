@@ -27,7 +27,7 @@ module.exports = function(grunt) {
 			},
 			canvas: {
 				files: {
-					'lib/canvas/scripts/*.js': 'src/canvas/*.ls',
+					'lib/canvas/scripts/*.js': 'src/canvas/**/*.ls',
 				},
 				options: {
 					bare: false
@@ -42,7 +42,8 @@ module.exports = function(grunt) {
 			},
             assets: {
 				files: {
-					'lib/canvas/assets/': 'src/canvas/assets/*'
+					'lib/canvas/assets/': 'src/canvas/assets/*',
+					'lib/canvas/scripts/': 'src/canvas/scripts/*js'
 				}
 			}
 		},
