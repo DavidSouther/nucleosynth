@@ -9,7 +9,7 @@ require <[ canvas spectroscope starmap atom ]>, (canvas, spectral, starmap, atom
 
 	x = 50
 	y = 50
-	for element in elements.slice 1
+	for element in <[ 1H 2H 3H 3He 4He ]> ++ elements.slice 3
 		atom.draw element, {x: x, y: y}
 		x += 50
 		if x > canvas.size.width
