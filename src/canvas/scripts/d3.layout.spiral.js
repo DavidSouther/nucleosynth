@@ -1,44 +1,70 @@
-d3.layout.spiral = 
+d3.layout.spiral = function(options){
+	var settings = {
+		exponent: options.exponent || 1/2,
+		spins: options.spins || 3,
+	};
+
+	settings.func = options.func || d3.layout.spiral.archimedes(settings);
+
+	function Ticker(points){
+		var theta = 0,
+		    scale = d3.scale.pow()
+		                    .domain([0, points])
+		                    .range([0, settings.spins * 2 * Math.PI])
+		                    .exponent(settings.exponent);
+
+		return function(){
+			return scale(theta++);
+		}
+	}
+
 	// Nodes are objects that will get `px, py` set relative to the spiral's center. nodes[0] will always get `{px: 0, py:0}`
 	// Follows an Archimedian spiral `r = a + b * theta`
-	function (nodes, options){
-		var settings = {
-			a: options.a || 0.3,
-			b: options.b || 1,
-			exponent: options.exponent || 1/2,
-			spins: options.spins || 3
-		};
-
-		function Ticker(){
-			var theta = 0,
-			    scale = d3.scale.pow()
-			                    .domain([0, nodes.length])
-			                    .range([0, settings.spins * 2 * Math.PI])
-			                    .exponent(settings.exponent);
-
-			return function(){
-				return scale(theta++);
-			}
-		}
-
-		function archimedes(theta){
-			return settings.a + (settings.b * theta);
-		}
-
-		function golden(theta){
-			return settings.a * Math.exp(settings.b * theta);
-		}
-
-		var ticker = Ticker(),
-		    func = archimedes,
+	var spiral = function(nodes){
+		var ticker = Ticker(nodes.length),
 		    r, theta, node,
 		    i_, len_ = nodes.length;
 
 		for(i_ = 0; i_ < len_; i_++){
 			node = nodes[i_];
 			theta = ticker();
-			r = func(theta);
+			r = settings.func(theta);
 			node.px = r * Math.cos(theta);
 			node.py = r * Math.sin(theta);
 		}
+	};
+
+	spiral.exponent = function(exp){
+		if(exp === null){ return settings.exponent; }
+		settings.exponent = exp;
+		return this;
+	};
+
+	spiral.spins = function(spins){
+		if(spins === null){ return settings.spin; }
+		settings.spins = spins;
+		return this;
 	}
+
+	return spiral;
+};
+
+d3.layout.spiral.archimedes = function(a, b){
+	a = a || 1;
+	b = b || 1;
+	return function(theta){
+		return a + (b * theta);
+	}
+};
+
+d3.layout.spiral.log = function(a, b){
+	a = a || 1;
+	b = b || 1;
+	return function(theta){
+		return a * Math.exp(b * theta);
+	}
+};
+
+d3.layout.spiral.golden = function(a){
+	return d3.layout.spiral.log(a, 0.306349);
+}

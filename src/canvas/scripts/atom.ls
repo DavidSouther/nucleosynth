@@ -149,7 +149,8 @@ define "atom", ->
 
 			nodes = protons ++ neutrons
 			d3.shuffle nodes
-			d3.layout.spiral nodes, {spins: 1.5 * period, exponent: 1/3}
+			spiral = d3.layout.spiral {spins: 1.5 * period, exponent: 1/3, func: d3.layout.spiral.golden! }
+			spiral nodes
 			nodes = nodes.reverse!
 
 			g.selectAll \circle
