@@ -4,7 +4,7 @@ d3.layout.spiral = function(options){
 		spins: options.spins || 3,
 	};
 
-	settings.func = options.func || d3.layout.spiral.archimedes(settings);
+	settings.func = options.func || d3.layout.spiral.archimedes();
 
 	function Ticker(points){
 		var theta = 0,
