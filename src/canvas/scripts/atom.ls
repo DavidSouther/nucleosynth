@@ -153,14 +153,14 @@ define "atom", ->
 
 	colors = 
 		proton: \red
-		neutron: \Silver
+		neutron: \silver
 
 	nuclei =
 		cx: '40%'
 		cy: '60%'
-		fx: '5%'
-		fy: '5%'
-		r: '80%'
+		fx: '25%'
+		fy: '35%'
+		r: '85%'
 
 	/*
 		Function to place highlighted spheres at a position.
@@ -175,17 +175,16 @@ define "atom", ->
 					r: ->params.radius
 					cx: ->it.px
 					cy: ->it.py
+				.style do
+					\stroke : -> "black"
+					\stroke-width : -> "1"
 
 			if params.highlight
 				circles
-					.attr do
-						fill: -> "url(\##{it.color})"
+					.attr \fill, -> "url(\##{it.color})"
 			else
 				circles
-					.style do
-						fill: -> colors[it.color]
-						stroke: -> "black"
-						stroke-width: -> "1"
+					.attr \fill, -> colors[it.color]
 
 	class Atom
 		(@canvas)->
