@@ -145,35 +145,89 @@ define "atom", ->
 			if protons < 87 then return 6
 			return 7
 
+	colors = 
+		proton: \red
+		neutron: \Silver
+
+	nuclei =
+		cx: '40%'
+		cy: '60%'
+		fx: '5%'
+		fy: '5%'
+		r: '80%'
+
+	Sphere = (params)->
+		(circles)->
+			circles = circles.append \svg:circle
+				.attr do
+					r: ->params.radius
+					cx: ->it.px
+					cy: ->it.py
+
+			if params.highlight
+				circles
+					.attr do
+						fill: -> "url(\##{it.color})"
+			else
+				circles
+					.style do
+						fill: -> colors[it.color]
+						stroke: -> "black"
+						stroke-width: -> "1"
+
 	class Atom
 		(@canvas)->
-		draw: (iso, here)->
+			defs = @canvas.svg.select \defs
+			proton = defs.append \svg:radialGradient
+				.attr { id: \proton } <<< nuclei
+			proton.append \svg:stop
+				.attr do
+					offset: 0
+					stop-color: colors['proton']
+			proton.append \svg:stop
+				.attr do
+					offset: 1
+					stop-color: "white"
+
+			neutron = defs.append \svg:radialGradient
+				.attr { id: \neutron } <<< nuclei
+			neutron.append \svg:stop
+				.attr do
+					offset: 0
+					stop-color: colors['neutron']
+			neutron.append \svg:stop
+				.attr do
+					offset: 1
+					stop-color: "white"
+
+		draw: !(iso, center)->
 			regex = //([0-9]*)([A-Z][a-z]*)//
 			parts = regex.exec iso
 			atom = elements.by.symbol[parts.2]
 			isotope = if +parts.1 then (parts.1 - atom.number) else atom.number
-			protons = d3.range atom.number .map -> {color: "red"}
-			neutrons = d3.range isotope .map -> {color: "silver"}
+			protons = d3.range atom.number .map -> { color: \proton }
+			neutrons = d3.range isotope .map -> { color: \neutron }
 			period = elements.period protons.length
 			scale = 1 / period
 			g = @canvas.svg.append \g
-				.attr \transform, "translate(#{here.x}, #{here.y}) scale(#{scale})"
+				.attr do
+					class: atom.name
+					transform: "translate(#{center.x}, #{center.y}) scale(#{scale})"
 
 			nodes = protons ++ neutrons
 			d3.shuffle nodes
-			spiral = d3.layout.spiral {spins: 1.5 * period, exponent: 1/3, func: d3.layout.spiral.golden! }
+			spiral = d3.layout.spiral { spins: 1.5 * period, exponent: 1/3 }
 			spiral nodes
 			nodes = nodes.reverse!
 
-			g.selectAll \circle
+			sphere = Sphere do
+				radius: 10
+				highlight: true
+
+			circles = g.selectAll \circle
 				.data nodes
-				.enter!append \svg:circle
-				.attr "r", -> 10
-				.attr "cx", -> it.px
-				.attr "cy", -> it.py
-				.style "fill", -> it.color
-				.style "stroke", -> "black"
-				.style "stroke-width", -> "1"
-				.style "z-index", (d, i)-> 0 - i
+				.enter!
+
+			sphere circles
 
 		list: -> elements.by.number
