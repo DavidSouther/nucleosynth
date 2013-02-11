@@ -50,7 +50,7 @@ d3.layout.spiral = function(options){
 };
 
 d3.layout.spiral.linear = d3.layout.spiral.archimedes = function(a, b){
-	a = a || 1;
+	a = a || 0;
 	b = b || 1;
 	return function(theta){
 		return a + (b * theta);
