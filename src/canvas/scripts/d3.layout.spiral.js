@@ -18,7 +18,7 @@ d3.layout.spiral = function(options){
 		}
 	}
 
-	// Nodes are objects that will get `px, py` set relative to the spiral's center. nodes[0] will always get `{px: 0, py:0}`
+	// Nodes are objects that will get `px, py` set relative to the spiral's center.
 	// Follows an Archimedian spiral `r = a + b * theta`
 	var spiral = function(nodes){
 		var ticker = Ticker(nodes.length),
@@ -49,7 +49,7 @@ d3.layout.spiral = function(options){
 	return spiral;
 };
 
-d3.layout.spiral.archimedes = function(a, b){
+d3.layout.spiral.linear = d3.layout.spiral.archimedes = function(a, b){
 	a = a || 1;
 	b = b || 1;
 	return function(theta){
