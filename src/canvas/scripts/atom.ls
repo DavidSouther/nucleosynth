@@ -1,6 +1,12 @@
 define "atom", ->
 
-	elements = 
+	/*
+		Collection of elements.
+		`by.symbol` is a map of atomic symbol to object with name and number.
+		`by.number` is an array that has each symbol indexed by atomic number.
+		`period` is a function that returns the atomic period a given atom (by number) is in.
+	*/
+	elements =
 		by:
 			symbol:
 				H:  {name: 'Hydrogen', number: 1}
@@ -156,6 +162,12 @@ define "atom", ->
 		fy: '5%'
 		r: '80%'
 
+	/*
+		Function to place highlighted spheres at a position.
+		Returned function expects an entered D3 selection whose data has `{px, py, color}`.
+		`px` and `py` are the circle centers. `color` is either an object that can be coerced to an SVG color,
+		or if `params.highlight` is true a string referencing an ID of a gradient to apply as fill.
+	 */
 	Sphere = (params)->
 		(circles)->
 			circles = circles.append \svg:circle
