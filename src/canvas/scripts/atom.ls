@@ -186,61 +186,88 @@ define "atom", ->
 				circles
 					.attr \fill, -> colors[it.color]
 
-	class Atom
+	class Stencil
+		/*
+			Constructor takes a reference to a canvas with an SVG element in {svg} to draw atoms on.
+		*/
 		(@canvas)->
+			@prepare @canvas
+
+		prepare: (canvas = @canvas)->
 			defs = @canvas.svg.select \defs
-			proton = defs.append \svg:radialGradient
-				.attr { id: \proton } <<< nuclei
-			proton.append \svg:stop
-				.attr do
-					offset: 0
-					stop-color: colors['proton']
-			proton.append \svg:stop
-				.attr do
-					offset: 1
-					stop-color: "white"
+			# Override, call, and put gradients, filters etc in `defs`
 
-			neutron = defs.append \svg:radialGradient
-				.attr { id: \neutron } <<< nuclei
-			neutron.append \svg:stop
-				.attr do
-					offset: 0
-					stop-color: colors['neutron']
-			neutron.append \svg:stop
-				.attr do
-					offset: 1
-					stop-color: "white"
+	/*
+		Class to stencil atoms.
+	 */
+	atom-defaults =
+		highlight: true
+		radius: 10
+	class Atom extends Stencil
+		(canvas, @options = atom-defaults)->
+			super canvas
 
+		prepare: !(canvas, defs = super canvas)->
+			<[ proton neutron ]>.forEach ~>
+				grad = defs.append \svg:radialGradient
+					.attr { id: it } <<< nuclei
+				grad.append \svg:stop
+					.attr do
+						'offset': 0
+						'stop-color': colors[it]
+						'stop-opacity': 1
+				grad.append \svg:stop
+					.attr do
+						'offset': 1
+						'stop-color': colors[it]
+						'stop-opacity': 0
+
+		/*
+			Given a string describing an atom like '125Pb', return a bare object describing that isotope.
+			Returned object has {name, number, symbol, isotope, period}
+		 */
+		_parse: (iso)->
+			regex = //([0-9]*)([A-Z][a-z]*)//
+			parts = regex.exec iso
+			atom = elements.by.symbol[parts.2]
+			atom.symbol = parts.2
+			atom.isotope = if +parts.1 then (parts.1 - atom.number) else atom.number
+			atom.period = elements.period atom.number
+			atom
+
+		/*
+			Given the bare description of the atom and a list of proton/neutron objects, return an array of objects
+			with an appropriate {cx, cy}.
+		 */
+		_spiral: (atom, nodes)->
+			spiral = d3.layout.spiral {spins: 1.5 * atom.period, exponent: 1/3, func: d3.layout.spiral.archimedes! }
+			d3.shuffle nodes
+			spiral nodes
+			nodes = nodes.reverse!
+			nodes
+
+		/*
+			Given an atomic string, draw the element at a given position on the stencil's canvas.
+		 */
 		draw: !(iso, center)->
-			scale = 1 / period
+			atom = @_parse iso
+			protons = d3.range atom.number .map -> { color: \proton }
+			neutrons = d3.range atom.isotope .map -> { color: \neutron }
+			nodes = @_spiral atom, protons ++ neutrons
+
+			scale = 1 / atom.period
 			g = @canvas.svg.append \g
 				.attr do
 					class: atom.name
 					transform: "translate(#{center.x}, #{center.y}) scale(#{scale})"
 
-			regex = //([0-9]*)([A-Z][a-z]*)//
-			parts = regex.exec iso
-			atom = elements.by.symbol[parts.2]
-			isotope = if +parts.1 then (parts.1 - atom.number) else atom.number
-			protons = d3.range atom.number .map -> { color: \proton }
-			neutrons = d3.range isotope .map -> { color: \neutron }
-			period = elements.period protons.length
-
-			nodes = protons ++ neutrons
-			d3.shuffle nodes
-			spiral nodes
-			nodes = nodes.reverse!
-
-			spiral = d3.layout.spiral {spins: 1.5 * period, exponent: 1/3, func: d3.layout.spiral.archimedes! }
-
-			sphere = Sphere do
-				radius: 10
-				highlight: true
+			spherate = Sphere do
+				@options
 
 			circles = g.selectAll \circle
 				.data nodes
 				.enter!
 
-			sphere circles
+			spherate circles
 
 		list: -> elements.by.number
