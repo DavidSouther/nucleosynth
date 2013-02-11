@@ -201,6 +201,12 @@ define "atom", ->
 					stop-color: "white"
 
 		draw: !(iso, center)->
+			scale = 1 / period
+			g = @canvas.svg.append \g
+				.attr do
+					class: atom.name
+					transform: "translate(#{center.x}, #{center.y}) scale(#{scale})"
+
 			regex = //([0-9]*)([A-Z][a-z]*)//
 			parts = regex.exec iso
 			atom = elements.by.symbol[parts.2]
@@ -208,17 +214,13 @@ define "atom", ->
 			protons = d3.range atom.number .map -> { color: \proton }
 			neutrons = d3.range isotope .map -> { color: \neutron }
 			period = elements.period protons.length
-			scale = 1 / period
-			g = @canvas.svg.append \g
-				.attr do
-					class: atom.name
-					transform: "translate(#{center.x}, #{center.y}) scale(#{scale})"
 
 			nodes = protons ++ neutrons
 			d3.shuffle nodes
-			spiral = d3.layout.spiral { spins: 1.5 * period, exponent: 1/3 }
 			spiral nodes
 			nodes = nodes.reverse!
+
+			spiral = d3.layout.spiral {spins: 1.5 * period, exponent: 1/3, func: d3.layout.spiral.archimedes! }
 
 			sphere = Sphere do
 				radius: 10
