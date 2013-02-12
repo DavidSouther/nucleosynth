@@ -1,8 +1,8 @@
-require <[ canvas spectroscope starmap atom ]>, (canvas, spectral, starmap, atom)->
+require <[ canvas spectroscope starmap atom ]>, (canvas, spectral, Starmap, atom)->
 	canvas = canvas \#chart
 	canvas.svg.style \background, "url('assets/dfb.png') black"
 
-	starmap canvas, canvas.svg.append \svg:g
+	(new Starmap canvas).draw canvas.svg.append \svg:g
 
 	atom = new atom canvas
 	elements = atom.list!
