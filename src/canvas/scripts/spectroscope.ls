@@ -18,4 +18,4 @@ define "spectroscope", ->
 				if k < spec.temp
 					return spec.class
 
-	return new Spectroscope!
+	new Spectroscope!
