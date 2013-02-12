@@ -1,0 +1,15 @@
+{
+	"pp": {
+		"reactions": [
+			"H H > 2He e v 0.42",
+			"2H H > 3He y 5.49"
+		],
+		"affinity": [5700, 5]
+	},
+	"ppI": {
+		"reactions": [
+			"3He 3He > 4He 2*H 12.86"
+		],
+		"affinity": [5000, 6]
+	}
+}
