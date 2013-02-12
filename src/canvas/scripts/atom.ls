@@ -179,7 +179,7 @@ define "atom", ->
 
 		!(circles)->
 			circle = circles.append \svg:g
-				.classed ->it.color
+				.attr \class, ->it.color
 			backgrounds = list circle
 				.style do
 					\stroke : -> "black"
@@ -250,16 +250,16 @@ define "atom", ->
 			nodes
 
 		/*
-			Given an atomic string, draw the element at a given position on the stencil's canvas.
+			Given an atomic string, draw the element at a given position in a layer, or directly on the stencil's canvas.
 		 */
-		draw: !(iso, center)->
+		draw: !(iso, center, layer = @canvas.svg)->
 			atom = @_parse iso
 			protons = d3.range atom.number .map -> { color: \proton }
 			neutrons = d3.range atom.isotope .map -> { color: \neutron }
 			nodes = @_spiral atom, protons ++ neutrons
 
 			scale = 1 / atom.period
-			g = @canvas.svg.append \g
+			g = layer.append \g
 				.attr do
 					class: atom.name
 					transform: "translate(#{center.x}, #{center.y}) scale(#{scale})"

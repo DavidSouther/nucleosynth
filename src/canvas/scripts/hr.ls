@@ -6,11 +6,13 @@ require <[ canvas spectroscope starmap atom ]>, (canvas, spectral, starmap, atom
 
 	atom = new atom canvas
 	elements = atom.list!
+	atoms = canvas.svg.append \svg:g
+		.attr \id, 'atoms'
 
 	x = 50
 	y = 50
-	for element in <[ 1H 2H 3H 3He 4He ]> ++ elements.slice 3
-		atom.draw element, {x: x, y: y}
+	for element in <[ 1H 2H 3H 3He 4He ]> ++ elements[3 to ]
+		atom.draw element, {x: x, y: y}, atoms
 		x += 50
 		if x > canvas.size.width
 			x = 50
