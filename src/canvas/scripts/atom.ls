@@ -155,7 +155,7 @@ define "atom", <[ stencil ]>, (Stencil)->
 		proton: \red
 		neutron: \silver
 
-	nuclei =
+	highlight =
 		cx: '40%'
 		cy: '60%'
 		fx: '25%'
@@ -202,7 +202,7 @@ define "atom", <[ stencil ]>, (Stencil)->
 		prepare: !(canvas, defs = super canvas)->
 			<[ proton neutron ]>.forEach ~>
 				grad = defs.append \svg:radialGradient
-					.attr { id: it } <<< nuclei
+					.attr { id: it } <<< highlight
 				grad.append \svg:stop
 					.attr do
 						'offset': 0

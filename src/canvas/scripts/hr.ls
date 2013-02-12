@@ -1,5 +1,5 @@
 require <[ canvas spectroscope starmap reactions ]>, (canvas, spectral, Starmap, Reaction)->
-	canvas = canvas \#chart
+	canvas = canvas \#chart, {scale: x: 'log'}
 	canvas.svg.style \background, "url('assets/dfb.png') black"
 
 	(new Starmap canvas).draw canvas.svg.append \svg:g
