@@ -160,7 +160,7 @@ define "atom", ->
 		cy: '60%'
 		fx: '25%'
 		fy: '35%'
-		r: '85%'
+		r: '55%'
 
 	/*
 		Function to place highlighted spheres at a position.
@@ -168,23 +168,26 @@ define "atom", ->
 		`px` and `py` are the circle centers. `color` is either an object that can be coerced to an SVG color,
 		or if `params.highlight` is true a string referencing an ID of a gradient to apply as fill.
 	 */
+
 	Sphere = (params)->
-		(circles)->
-			circles = circles.append \svg:circle
+		list = (circles)->
+			circles.append \svg:circle
 				.attr do
 					r: ->params.radius
 					cx: ->it.px
 					cy: ->it.py
+
+		!(circles)->
+			circle = circles.append \svg:g
+				.classed ->it.color
+			backgrounds = list circle
 				.style do
 					\stroke : -> "black"
 					\stroke-width : -> "1"
+				.attr \fill, -> colors[it.color]
 
-			if params.highlight
-				circles
-					.attr \fill, -> "url(\##{it.color})"
-			else
-				circles
-					.attr \fill, -> colors[it.color]
+			highlights = list circle
+				.attr \fill, -> "url(\##{it.color})"
 
 	class Stencil
 		/*
@@ -214,12 +217,12 @@ define "atom", ->
 				grad.append \svg:stop
 					.attr do
 						'offset': 0
-						'stop-color': colors[it]
-						'stop-opacity': 1
+						'stop-color': "white"
+						'stop-opacity': 0.5
 				grad.append \svg:stop
 					.attr do
 						'offset': 1
-						'stop-color': colors[it]
+						'stop-color': "white"
 						'stop-opacity': 0
 
 		/*
