@@ -10,7 +10,7 @@ define ->
 		list = (circles)->
 			circles.append \svg:circle
 				.attr do
-					r: ->params.radius
+					r: ->it.radius || params.radius
 					cx: ->it.px
 					cy: ->it.py
 
@@ -18,10 +18,8 @@ define ->
 			circle = circles.enter!append \svg:g
 				.attr \class, ->it.color
 			backgrounds = list circle
-				.style do
+				.attr \fill, -> params.colors[it.color]
+			if params.stroke
+				backgrounds.style do
 					\stroke : -> "black"
 					\stroke-width : -> "1"
-				.attr \fill, -> params.colors[it.color]
-
-			highlights = list circle
-				.attr \fill, -> "url(\##{it.color})"
