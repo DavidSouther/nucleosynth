@@ -9,7 +9,7 @@ define "atom", <[ sphere elements ]>, (Sphere, elements)->
 			| 2 =>
 				pos.col = if atom.number < 5 then atom.number - 2 else atom.number + 8
 			| 3 =>
-				pos.col = if atom.number < 14 then atom.number - 10 else atom.number
+				pos.col = if atom.number < 13 then atom.number - 10 else atom.number
 			| 4 =>
 				pos.col = atom.number - 18
 			| 5 =>
