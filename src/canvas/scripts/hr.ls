@@ -16,6 +16,7 @@ require <[ canvas starmap reactions atom ]>, (canvas, Starmap, Reaction, Atom)->
 
 	elements = [{symbol: sym} for sym in <[ 1H 2H 3H 3He 4He ]> ++ Atom.list![3 to ]]
 	grid = d3.layout.grid.element canvas.size
+	elements = grid elements
 	# Munge the first 3 Hydrogen and the next couple helium
 	elements[0 to 4].forEach !->it.scale = 0.7
 	elements[0]
@@ -31,7 +32,6 @@ require <[ canvas starmap reactions atom ]>, (canvas, Starmap, Reaction, Atom)->
 		..px = 860
 	elements[4]
 		..px = 890
-	elements = grid elements
 
 	atomizer = Atom canvas
 
