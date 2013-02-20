@@ -1,6 +1,16 @@
 require <[ canvas starmap reactions atom ]>, (canvas, Starmap, Reaction, Atom)->
 	canvas = canvas \#chart, {scale: x: 'log'}
-	canvas.svg.style \background, "url('assets/dfb.png') black"
+	canvas.svg = canvas.svg.append \svg:g
+		.attr \style, 'filter:url(#oil);'
+
+	canvas.svg
+		.append \svg:image
+		.attr do
+			\xlink:href : "assets/dfb.png"
+			\width : 960
+			\height : 500
+			\x : 0
+			\y : 0
 
 	(new Starmap canvas) canvas.svg.append \svg:g
 

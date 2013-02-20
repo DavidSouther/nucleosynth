@@ -57,23 +57,6 @@ define "atom", <[ sphere elements ]>, (Sphere, elements)->
 		highlight: true
 		radius: 10
 	Atom = do
-		prepare = !(canvas)->
-			defs = canvas.svg.select \defs
-			<[ proton neutron ]>.forEach ->
-				grad = defs.append \svg:radialGradient
-					.attr { id: it } <<< highlight
-				grad.append \svg:stop
-					.attr do
-						'offset': 0
-						'stop-color': "white"
-						'stop-opacity': 0.5
-				grad.append \svg:stop
-					.attr do
-						'offset': 1
-						'stop-color': "white"
-						'stop-opacity': 0
-
-
 		/*
 			Given the bare description of the atom and a list of proton/neutron objects, return an array of objects
 			with an appropriate {cx, cy}.
@@ -86,8 +69,9 @@ define "atom", <[ sphere elements ]>, (Sphere, elements)->
 			nodes
 
 		(canvas, options = atom-defaults)->
-			prepare canvas
-			options.colors = colors
+			options <<<
+				colors: colors
+				svg: canvas.svg
 			spherate = Sphere do
 				options
 

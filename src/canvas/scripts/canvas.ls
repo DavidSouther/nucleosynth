@@ -35,7 +35,7 @@ define "canvas", ->
 		width = (options.size.width || 960) - (margin.left + margin.right)
 		height = (options.size.height || 500) - (margin.top + margin.bottom)
 
-		svg = d3.select root .append \svg
+		svg = d3.select root
 			.attr do
 				\width : width + margin.left + margin.right
 				\height : height + margin.top + margin.bottom
@@ -49,4 +49,4 @@ define "canvas", ->
 				height: height
 			margin: margin
 			svg: svg
-			defs: svg.append \svg:defs
+			defs: svg.select \defs
