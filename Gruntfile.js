@@ -34,6 +34,9 @@ module.exports = function(grunt) {
 				}
 			},
 		},
+		jshint: {
+			all: ['src/canvas/**/*.js']
+		},
 		copy: {
 			vendors: {
 				files: {
@@ -64,6 +67,7 @@ module.exports = function(grunt) {
 	});
 
 	grunt.loadNpmTasks('grunt-contrib');
+	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-livescript');
 
 	grunt.registerTask('vendors', 'copy:vendors');
