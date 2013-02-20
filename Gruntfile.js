@@ -26,9 +26,13 @@ module.exports = function(grunt) {
 				}
 			},
 			canvas: {
-				files: {
-					'lib/canvas/scripts/*.js': 'src/canvas/**/*.ls',
-				},
+				files: [{
+					expand: true,
+					cwd: 'src/canvas/scripts/',
+					src: ['**/*.ls'],
+					dest: 'lib/canvas/scripts/',
+					ext: '.js'
+				}],
 				options: {
 					bare: false
 				}
@@ -40,14 +44,25 @@ module.exports = function(grunt) {
 		copy: {
 			vendors: {
 				files: {
-					'lib/canvas/vendors/': 'vendors'
+					src: 'vendors/',
+					dest: 'lib/canvas/vendors/'
 				}
 			},
             assets: {
-				files: {
-					'lib/canvas/assets/': 'src/canvas/assets/*',
-					'lib/canvas/scripts/': 'src/canvas/scripts/*js'
-				}
+				files: [
+					{
+						expand: true,
+						cwd: 'src/canvas/scripts/',
+						src: ['**/*.js'],
+						dest: 'lib/canvas/scripts/'
+					},
+					{
+						expand: true,
+						cwd: 'src/canvas/assets/',
+						src: ['**/*'],
+						dest: 'lib/canvas/assets/'
+					}
+				]
 			}
 		},
 		server: {
