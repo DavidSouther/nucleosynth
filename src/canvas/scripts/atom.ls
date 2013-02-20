@@ -97,20 +97,20 @@ define "atom", <[ sphere elements ]>, (Sphere, elements)->
 			Given a string describing an atom like '125Pb', return a bare object describing that isotope.
 			Returned object has {name, number, symbol, isotope, period}
 		 */
-		parse: (iso)->
+		parse: (atom)->
 			regex = //([0-9]*)([A-Z][a-z]*)//
-			parts = regex.exec iso
+			parts = regex.exec atom.symbol
 			atom = elements.by.symbol[parts.2]
-			atom.symbol = parts.2
 			atom.isotope = if +parts.1 then (parts.1 - atom.number) else atom.number
 			atom.period = elements.period atom.number
 			atom
 
 		data: (atom)->
-			atom <<< Atom.parse atom.symbol
+			# TODO don't recalculate
+			atom <<< Atom.parse atom
 			atom <<<
-				protons: d3.range atom.number .map -> { color: \proton }
-				neutrons: d3.range atom.isotope .map -> { color: \neutron }
+				protons: d3.range atom.number .map -> { color: \proton, radius: \5 }
+				neutrons: d3.range atom.isotope .map -> { color: \neutron, radius: \10 }
 				scale: 1 / atom.period
 			atom.nodes = _spiral atom, atom.protons ++ atom.neutrons
 			atom
