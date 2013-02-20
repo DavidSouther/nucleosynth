@@ -21,9 +21,9 @@ define "canvas", ->
 	(root = \body, options = {})->
 		# Ensure options are lookupable
 		options
+			..{}size
 			..{}margin
 			..{}scale
-			..{}size
 
 		# Parameters
 		margin =
