@@ -9,7 +9,7 @@ define "starmap", <[ spectroscope stencil ]>, (spectral, Stencil)->
 	Starmap = do
 		# Add the named gradients for the different spectral classes.
 		prepare = !(canvas)->
-			defs = canvas.svg.select \defs
+			defs = canvas.defs
 			grads = defs.selectAll \radialGradient
 				.data spectral.spectro
 				.enter!append \svg:radialGradient
