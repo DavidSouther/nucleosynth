@@ -1,4 +1,44 @@
 define "atom", <[ sphere elements ]>, (Sphere, elements)->
+	if d3.layout.grid
+		tableMap = (atom)->
+			atom = Atom.data atom
+			pos = {row: atom.period, col: -1}
+			switch atom.period
+			| 1 =>
+				pos.col = if atom.number is 1 then 1 else 18
+			| 2 =>
+				pos.col = if atom.number < 5 then atom.number - 2 else atom.number + 8
+			| 3 =>
+				pos.col = if atom.number < 14 then atom.number - 10 else atom.number
+			| 4 =>
+				pos.col = atom.number - 18
+			| 5 =>
+				pos.col = atom.number - 36
+			| 6 =>
+				if 56 < atom.number < 72
+					pos.col = atom.number - 54 + 0.25
+					pos.row = pos.row + 2.5
+				else
+					pos.col = if atom.number < 57 then atom.number - 54 else atom.number - 68
+			| 7 =>
+				if 88 < atom.number < 104
+					pos.col = atom.number - 86 + 0.25
+					pos.row = pos.row + 2.5
+				else
+					pos.col = if atom.number < 89 then atom.number - 86 else atom.number - 100
+
+			pos
+
+		d3.layout.grid.element = (layer)->
+			options =
+				rows: 10
+				cols: 18
+				map: tableMap
+				scales:
+					height: d3.scale.linear().domain([1, 10]).range([25, layer.height - 25])
+					width: d3.scale.linear().domain([1, 18]).range([25, layer.width - 25])
+			d3.layout.grid options
+
 	colors =
 		proton: \red
 		neutron: \silver
