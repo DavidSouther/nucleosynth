@@ -51,14 +51,6 @@ define <[ atom stencil ]>, (Atom, Stencil)->
 				.data -> it.products
 				.call atomizer
 
-/*
-				energy = reactions.selectAll \g.energy
-					.data -> it.energy
-					.enter!append \svg:g
-						.attr do
-							class: -> "energy"
-*/
-
 		Chains = !(selection)->
 			selection.enter!append \svg:g
 
