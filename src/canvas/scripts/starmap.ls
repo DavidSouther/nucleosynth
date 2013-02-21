@@ -52,11 +52,6 @@ define "starmap", <[ spectroscope stencil ]>, (spectral, Stencil)->
 			# Possibly override the layer to draw on. Useful for grouping.
 			!(layer)->
 				d3.csv "assets/hr.csv", !(error, stars)~>
-					# Reverse the temperature axis for historical reasons.
-					domain = (d3.extent stars, (-> +it.temp)).reverse!
-					canvas.scale.x.domain domain .nice!
-					canvas.scale.y.domain d3.extent stars, (-> +it.mag) .nice!
-
 					# Update the layer
 					layer
 						.attr \id, "herzrus"
