@@ -18,32 +18,6 @@ require <[ canvas starmap reactions atom ]>, !(canvas, Starmap, Reaction, Atom)-
 			\x : 0
 			\y : 0
 
-	(new Starmap canvas) canvas.svg.append \svg:g
+	(Starmap canvas) canvas.svg.append \svg:g
 
-	elements = [{symbol: sym} for sym in <[ 1H 2H 3H 3He 4He ]> ++ Atom.list![3 to ]]
-	grid = d3.layout.grid.element canvas.size
-	elements = grid elements
-	# Munge the first 3 Hydrogen and the next couple helium
-	elements[0 to 4].forEach !->it.scale = 0.7
-	elements[0]
-		..px = 15
-		..py = 15
-	elements[1]
-		..px = 35
-		..py = 15
-	elements[2]
-		..px = 25
-		..py = 35
-	elements[3]
-		..px = 860
-	elements[4]
-		..px = 890
-
-	atomizer = Atom canvas
-
-	canvas.svg
-		.append \svg:g
-		.attr \id, 'atoms'
-		.selectAll \.atom
-		.data elements
-		.call atomizer
+	(Reaction canvas) canvas.svg.append \svg:g
