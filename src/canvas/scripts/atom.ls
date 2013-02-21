@@ -42,6 +42,9 @@ define "atom", <[ sphere elements ]>, (Sphere, elements)->
 	colors =
 		proton: \red
 		neutron: \silver
+		electron: \yellow
+		positron: \blue
+		gamma: \green
 
 	highlight =
 		cx: '40%'
@@ -83,7 +86,7 @@ define "atom", <[ sphere elements ]>, (Sphere, elements)->
 					.datum -> Atom.data it
 					.attr do
 						class: ->"atom #{it.symbol}"
-						transform: ->"translate(#{it.px}, #{it.py}) scale(#{it.scale})"
+						transform: ->"translate(#{it.px || 0}, #{it.py || 0}) scale(#{it.scale || 1})"
 
 				circles = g
 					.selectAll \circle
@@ -92,6 +95,14 @@ define "atom", <[ sphere elements ]>, (Sphere, elements)->
 
 	Atom <<<
 		list: -> elements.by.number
+
+
+		particle: (atom)->
+			particles =
+				\e : \electron
+				\v : \positron
+				\y : \gamma
+			{ nodes: [{ color: particles[atom.symbol], radius: \5 }] }
 
 		/*
 			Given a string describing an atom like '125Pb', return a bare object describing that isotope.
@@ -106,6 +117,7 @@ define "atom", <[ sphere elements ]>, (Sphere, elements)->
 			atom
 
 		data: (atom)->
+			if atom.symbol in <[ e v y ]> then return Atom.particle atom
 			# TODO don't recalculate
 			atom <<< Atom.parse atom
 			atom <<<
