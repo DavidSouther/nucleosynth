@@ -6,10 +6,10 @@ require <[ canvas stencils/starmap stencils/reactions stencils/atom ]>, !(canvas
 	canvas.scale.x.domain [100000, 1000] .nice!
 	canvas.scale.y.domain [-8, 7] .nice!
 
-	canvas.svg = canvas.svg.append \svg:g
+	background = canvas.svg.append \svg:g
 		.attr \style, 'filter:url(#oil);'
 
-	canvas.svg
+	background
 		.append \svg:image
 		.attr do
 			\xlink:href : "assets/dfb.png"
@@ -18,6 +18,6 @@ require <[ canvas stencils/starmap stencils/reactions stencils/atom ]>, !(canvas
 			\x : 0
 			\y : 0
 
-	(Starmap canvas) canvas.svg.append \svg:g
+	(Starmap canvas) background.append \svg:g
 
 	(Reaction canvas) canvas.svg.append \svg:g

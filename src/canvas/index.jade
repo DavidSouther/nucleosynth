@@ -10,13 +10,7 @@ html
 body
 	svg#chart
 		defs
-			filter#highlight
-				fegaussianblur(in="SourceAlpha", result="result0", stdDeviation=22)
-				fespecularlighting(in="results0", kernelUnitLength=4, lighting-color="rgb(232, 232, 232)", result="result1", specularExponent=25, surfaceScale=10)
-					fedistantlight(azimuth=75, elevation=100)
-				fecomposite(in="SourceGraphic", in2="result1", k2=1, k3=1, operator="arithmetic", result="result4")
-				fecomposite(in="result4", in2="SourceAlpha", operator="in", result="result2")
-			filter#oil
+			filter#oil(filterUnits="objectBoundingBox", x="0%", y="0%", width="100%", height="100%")
 				femorphology(in="SourceGraphic", radius="2", result="result_oil_morph")
-				//- feturbulance(baseFrequency=0.078)
-				//- fedisplacementmap(in="result_oil_morph", in2="result_oil_turb", scale=4, xChannelSelector="R", yChannelSelector="G")
+				feturbulence(type="turbulence", baseFrequency="0.05", numOctaves="2", result="result_oil_turb")
+				fedisplacementmap(in="result_oil_morph", in2="result_oil_turb", scale=4, xChannelSelector="R", yChannelSelector="G")
