@@ -1,4 +1,4 @@
-require <[ canvas starmap reactions atom ]>, !(canvas, Starmap, Reaction, Atom)->
+require <[ canvas stencils/starmap stencils/reactions stencils/atom ]>, !(canvas, Starmap, Reaction, Atom)->
 	canvas = canvas \#chart, {scale: x: 'log'}
 
 	# Reverse the temperature axis for historical reasons.

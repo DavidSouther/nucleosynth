@@ -1,4 +1,4 @@
-define "atom", <[ sphere elements ]>, (Sphere, elements)->
+define <[ stencils/sphere data/elements ]>, (Sphere, elements)->
 	if d3.layout.grid
 		tableMap = (atom)->
 			atom = Atom.data atom

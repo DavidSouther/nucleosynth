@@ -1,4 +1,4 @@
-define <[ atom stencil ]>, (Atom, Stencil)->
+define <[ stencils/atom stencils/stencil ]>, (Atom, Stencil)->
 	reaction-options = {}
 	isNumeric = ->!isNaN(parseFloat it) && isFinite it
 

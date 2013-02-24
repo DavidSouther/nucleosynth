@@ -1,4 +1,4 @@
-define "starmap", <[ spectroscope stencil ]>, (spectral, Stencil)->
+define <[ data/spectroscope ]>, (spectral)->
 	# Look up the spectral class of a star.
 	spectrate = (star)->"class#{spectral.class +star.temp}"
 

@@ -1,4 +1,4 @@
-define "spectroscope", ->
+define ->
 	class Spectroscope
 		# Prepare spectroscope for spectrography!
 		->
