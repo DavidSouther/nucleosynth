@@ -31,9 +31,12 @@ define "canvas", ->
 			right: options.margin.top || 20
 			bottom: options.margin.top || 30
 			left: options.margin.top || 40
+		margin <<<
+			leftright: margin.left + margin.right
+			topbottom: margin.top + margin.bottom
 
-		width = (options.size.width || 960) - (margin.left + margin.right)
-		height = (options.size.height || 500) - (margin.top + margin.bottom)
+		width = (options.size.width || 960) - margin.leftright
+		height = (options.size.height || 500) - margin.bottom
 
 		svg = d3.select root
 			.attr do

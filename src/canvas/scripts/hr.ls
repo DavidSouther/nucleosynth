@@ -13,8 +13,8 @@ require <[ canvas stencils/starmap stencils/reactions stencils/atom ]>, !(canvas
 		.append \svg:image
 		.attr do
 			\xlink:href : "assets/dfb.png"
-			\width : 960
-			\height : 500
+			\width : canvas.size.width + canvas.margin.leftright
+			\height : canvas.size.height + canvas.margin.topbottom
 			\x : 0
 			\y : 0
 
