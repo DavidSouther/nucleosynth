@@ -36,20 +36,22 @@ define "canvas", ->
 			topbottom: margin.top + margin.bottom
 
 		width = (options.size.width || 960) - margin.leftright
-		height = (options.size.height || 500) - margin.bottom
+		height = (options.size.height || 500) - margin.topbottom
 
 		svg = d3.select root
 			.attr do
 				\width : width + margin.left + margin.right
 				\height : height + margin.top + margin.bottom
 
+		scales =
+			x: d3.scale[options.scale.x || 'linear']!range [0, width] .domain options.domain.x || [0, 1] .nice!
+			y: d3.scale[options.scale.y || 'linear']!range [0, height] .domain options.domain.y || [0, 1] .nice!
+
 		canvas =
-			scale:
-				x: d3.scale[options.scale.x || 'linear']!range [0, width]
-				y: d3.scale[options.scale.y || 'linear']!range [0, height]
 			size:
 				width: width
 				height: height
 			margin: margin
+			scale: scales
 			svg: svg
 			defs: svg.select \defs

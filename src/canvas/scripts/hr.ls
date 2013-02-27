@@ -1,10 +1,10 @@
 require <[ canvas stencils/starmap stencils/reactions stencils/atom ]>, !(canvas, Starmap, Reaction, Atom)->
-	canvas = canvas \#chart, {scale: x: 'log'}
-
-	# Reverse the temperature axis for historical reasons.
-	# scales taken from hr.cvs
-	canvas.scale.x.domain [100000, 1000] .nice!
-	canvas.scale.y.domain [-8, 7] .nice!
+	canvas = canvas \#chart,
+		scale:
+			x: 'log'
+		domain:
+			x: [100000, 1000]
+			y: [-8, 15]
 
 	background = canvas.svg.append \svg:g
 		.attr \style, 'filter:url(#oil);'
