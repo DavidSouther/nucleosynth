@@ -14,16 +14,18 @@ define <[ data/spectroscope ]>, (spectral)->
 				.data spectral.spectro
 				.enter!append \svg:radialGradient
 				.attr do
-					\id, ->spectrate it
-					\cx, +0.5
-					\cy, +0.5
-					\r, +1
+					\id : ->spectrate it
+					\cx : +0.5
+					\cy : +0.5
+					\r : +1
 			grads.append \stop
-				.attr \stop-color, ->it.color
-				.attr \offset, '0%'
+				.attr do
+					\stop-color : ->it.color.brighter!
+					\offset : '0%'
 			grads.append \stop
-				.attr \stop-color, ->it.color.darker!
-				.attr \offset, '100%'
+				.attr do
+					\stop-color : ->it.color
+					\offset : '100%'
 
 		# Get a Starmap to draw on a certain canvas.
 		(canvas)->
