@@ -93,16 +93,17 @@ define <[ stencils/sphere data/elements ]>, (Sphere, elements)->
 					.data -> it.nodes
 					.call spherate
 
+	particles =
+		\e : \electron
+		\v : \positron
+		\y : \gamma
+
 	Atom <<<
 		list: -> elements.by.number
 
-
 		particle: (atom)->
-			particles =
-				\e : \electron
-				\v : \positron
-				\y : \gamma
-			{ nodes: [{ color: particles[atom.symbol], radius: \5 }] }
+			symbol = particles[atom.symbol]
+			{ symbol, nodes: [{ color: symbol, radius: \5, x: 0, y: 0 }] }
 
 		/*
 			Given a string describing an atom like '125Pb', return a bare object describing that isotope.
