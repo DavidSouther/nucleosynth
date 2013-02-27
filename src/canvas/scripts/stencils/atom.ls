@@ -58,7 +58,7 @@ define <[ stencils/sphere data/elements ]>, (Sphere, elements)->
 	 */
 	atom-defaults =
 		highlight: true
-		radius: 10
+		radius: 6
 	Atom = do
 		/*
 			Given the bare description of the atom and a list of proton/neutron objects, return an array of objects
@@ -86,7 +86,7 @@ define <[ stencils/sphere data/elements ]>, (Sphere, elements)->
 					.datum -> Atom.data it
 					.attr do
 						class: ->"atom #{it.symbol}"
-						transform: ->"translate(#{it.px || 0}, #{it.py || 0}) scale(#{it.scale || 1})"
+						transform: ->"translate(#{it.x || 0}, #{it.y || 0}) scale(#{it.scale || 1})"
 
 				circles = g
 					.selectAll \circle
@@ -122,7 +122,7 @@ define <[ stencils/sphere data/elements ]>, (Sphere, elements)->
 			atom <<< Atom.parse atom
 			atom <<<
 				protons: d3.range atom.number .map -> { color: \proton, radius: \5 }
-				neutrons: d3.range atom.isotope .map -> { color: \neutron, radius: \10 }
+				neutrons: d3.range atom.isotope .map -> { color: \neutron, radius: \5 }
 				scale: 1 / atom.period
 			atom.nodes = _spiral atom, atom.protons ++ atom.neutrons
 			atom
