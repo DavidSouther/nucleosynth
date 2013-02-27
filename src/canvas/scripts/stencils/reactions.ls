@@ -2,43 +2,13 @@ define <[ stencils/atom stencils/stencil ]>, (Atom, Stencil)->
 	reaction-options = {}
 	isNumeric = ->!isNaN(parseFloat it) && isFinite it
 
-
-	forceLayout = !->
-		nodes = [@energy]
-		@links = []
-
-		for agent in @agents
-			nodes.push agent
-			@links.push do
-				source: agent
-				target: @energy
-
-		for product in @products
-			nodes.push product
-			@links.push do
-				source: @energy
-				target: product
-
-		force = d3.layout.force!
-			.size [100, 75]
-			.nodes nodes
-			.links @links
-			.linkDistance 5
-			.charge -10
-
-		force.start!
-		for a in [0 to 1]
-			force.tick!
-		force.stop!
-
 	clusterLayout = !->
 		@energy.children = [@agents, @products]
 
-		cluster = d3.layout.cluster!
-			.size [100, 75]
+		cluster = d3.layout.cluster!size [360, 25]
 
-		nodes = cluster.nodes @energy
-		@links = cluster.links nodes
+		@nodes = cluster.nodes @energy
+		@links = cluster.links @nodes
 
 	class Reaction
 		(str)->
@@ -46,7 +16,7 @@ define <[ stencils/atom stencils/stencil ]>, (Atom, Stencil)->
 			reaction = str.split \>
 			@agents = {children: [{symbol: symbol} for symbol in reaction.0.trim!split ' ']}
 			@products = {children: [{symbol: symbol} for symbol in reaction.1.trim!split ' ']}
-			@energy = {mev: 0}
+			@energy = {mev: 0, x: 0, y: 0}
 
 			p = @products.children # Only for the next 3 lines.
 			if isNumeric +(p[p.length - 1].symbol)
@@ -54,13 +24,35 @@ define <[ stencils/atom stencils/stencil ]>, (Atom, Stencil)->
 				p.length --
 
 			@_layout!
+			for link in @links
+				link.mev = @energy.mev
 
 		_layout: clusterLayout
 
+	color = do
+		scale = d3.scale.linear!
+			.domain [-0.93, 14.06]
+			.range [0, 80]
+		(mev)->
+			hue = scale mev
+			col = d3.hsl hue, 1, 0.5
+			col
+
 	Reactions = (canvas)->
 		atomizer = Atom canvas
-		diagonal = d3.svg.diagonal!
-			.projection -> [it.x, it.y]
+		diagonal = d3.svg.diagonal.radial!
+			.projection -> [it.y, it.x / 180 * Math.PI]
+
+		React = !(selection)->
+			selection.enter!append \svg:g
+
+			selection
+				.attr do
+					\class : \reactant
+					\transform : ->"rotate(#{it.x - 90}) translate(#{it.y})"
+				.selectAll \.atom
+				.data (d)->[{d.symbol}]
+				.call atomizer
 
 		Reacts = !(selection)->
 			selection.enter!append \svg:g
@@ -71,21 +63,20 @@ define <[ stencils/atom stencils/stencil ]>, (Atom, Stencil)->
 				.attr do
 					\class : \link
 					\d : diagonal
+				.style do
+					\stroke : -> color it.mev
 
 			selection
-				.selectAll \.agents
-				.data -> it.agents.children
-				.call atomizer
-
-			selection
-				.selectAll \.products
-				.data -> it.products.children
-				.call atomizer
+				.attr do
+					\transform : "rotate(180)"
+				.selectAll \.reactant
+				.data -> it.agents.children ++ it.products.children
+				.call React
 
 		Chains = !(selection)->
 			selection.enter!append \svg:g
-				.attr do
-					\class : -> it.reaction
+
+			# Convert affinity to x,y position.
 
 			selection
 				.attr do
@@ -99,10 +90,10 @@ define <[ stencils/atom stencils/stencil ]>, (Atom, Stencil)->
 			d3.json "assets/reactions.json", !(errors, chains)->
 				chains = for chain, action of chains
 					action.reactions = [new Reaction reaction for reaction in action.reactions]
+					# Calculate affinity?
 					{'chain': chain, 'action': action}
 
-				layer.append \svg:g
-					.attr \class, 'reactions'
+				layer.attr \class, 'reactions'
 					.selectAll \.chain
 					.data chains
 					.call Chains
