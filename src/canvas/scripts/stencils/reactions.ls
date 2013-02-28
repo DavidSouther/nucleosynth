@@ -5,7 +5,7 @@ define <[ stencils/atom stencils/stencil ]>, (Atom, Stencil)->
 	clusterLayout = !->
 		@energy.children = [@agents, @products]
 
-		cluster = d3.layout.cluster!size [360, 25]
+		cluster = d3.layout.cluster!size [360, 15]
 
 		@nodes = cluster.nodes @energy
 		@links = cluster.links @nodes
@@ -81,7 +81,7 @@ define <[ stencils/atom stencils/stencil ]>, (Atom, Stencil)->
 			selection
 				.attr do
 					\class : ->"chain #{it.chain}"
-					\transform : ->"translate(#{canvas.scale.x it.action.affinity.0}, #{canvas.scale.y it.action.affinity.1})"
+					\transform : ->"translate(#{it.x}, #{it.y})"
 				.selectAll \.reaction
 				.data ->it.action.reactions
 				.call Reacts
@@ -91,7 +91,12 @@ define <[ stencils/atom stencils/stencil ]>, (Atom, Stencil)->
 				chains = for chain, action of chains
 					action.reactions = [new Reaction reaction for reaction in action.reactions]
 					# Calculate affinity?
-					{'chain': chain, 'action': action}
+					{
+						'chain': chain
+						'action': action
+						'x': canvas.scale.x action.affinity.0
+						'y': canvas.scale.y action.affinity.1
+					}
 
 				layer.attr \class, 'reactions'
 					.selectAll \.chain
