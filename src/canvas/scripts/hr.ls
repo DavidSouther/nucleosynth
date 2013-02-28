@@ -3,8 +3,8 @@ require <[ canvas stencils/starmap stencils/reactions stencils/atom ]>, !(canvas
 		scale:
 			x: 'log'
 		domain:
-			x: [100000, 1000]
-			y: [-8, 15]
+			x: [28000, 2000]
+			y: [-8, 17]
 
 	background = canvas.svg.append \svg:g
 		.attr \style, 'filter:url(#oil);'
