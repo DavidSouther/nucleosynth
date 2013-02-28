@@ -9,7 +9,7 @@ module.exports = function(grunt) {
 			canvas: {
 				files: {
 					'lib/canvas/index.html': ['src/canvas/index.jade'],
-					'lib/canvas/star.html': ['src/canvas/star.jade']
+					'lib/canvas/star.svg': ['src/canvas/star.jade']
 				}
 			}
 		},
