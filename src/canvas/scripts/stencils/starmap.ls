@@ -12,20 +12,67 @@ define <[ data/spectroscope ]>, (spectral)->
 			defs = canvas.defs
 			grads = defs.selectAll \radialGradient
 				.data spectral.spectro
-				.enter!append \svg:radialGradient
+				.enter!
+
+			linear = grads.append \svg:linearGradient
 				.attr do
-					\id : ->spectrate it
-					\cx : +0.5
-					\cy : +0.5
-					\r : +1
-			grads.append \stop
+					\id : ->"linear_#{spectrate it}"
+			linear.append \stop
 				.attr do
 					\stop-color : ->it.color.brighter!
 					\offset : '0%'
-			grads.append \stop
+			linear.append \stop
 				.attr do
 					\stop-color : ->it.color
 					\offset : '100%'
+
+			radial = grads.append \svg:radialGradient
+				.attr do
+					\id : ->"radial_#{spectrate it}"
+					\xlink:href : ->"\#linear_#{spectrate it}"
+					\cx : "-1"
+					\cy : "-1"
+					\fx : "-1"
+					\fy : "-1"
+					\r : "25"
+					\gradientTransform : "matrix(1,0,0,1.0658729,0,-33.938973)"
+					\gradientUnits : "userSpaceOnUse"
+
+			filter = grads.append \svg:filter
+				.attr do
+					\id : -> "stellar_#{spectrate it}"
+
+			filter.append \svg:feTurbulence 
+				.attr do
+					\numOctaves : "6"
+					\baseFrequency : "0.6"
+					\type : "fractalNoise"
+					\seed : ->Math.floor 100 * Math.random!
+					\in : "SourceGraphic"
+			filter.append \svg:feColorMatrix 
+				.attr do
+					\result : "result0"
+					\values : "1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 3 -1 "
+			filter.append \svg:feFlood 
+				.attr do
+					"flood-opacity" : "0.25"
+					"flood-color" : -> it.color.darker!darker!
+					\result : "result1"
+			filter.append \svg:feBlend 
+				.attr do
+					\in2 : "FillPaint"
+					\mode : "normal"
+					\in : "result1"
+					\result : "result2"
+			filter.append \svg:feComposite 
+				.attr do
+					\in2 : "result0"
+					\operator : "out"
+					\result : "result3"
+			filter.append \svg:feComposite 
+				.attr do
+					\in2 : "SourceGraphic"
+					\operator : "atop"
 
 		# Get a Starmap to draw on a certain canvas.
 		(canvas)->
@@ -33,20 +80,19 @@ define <[ data/spectroscope ]>, (spectral)->
 
 			# Reusable Star drawer
 			star = !(selection)->
-				circles = selection
-					.enter!
-					.append \svg:circle
+				stars = selection.enter!
+					.append \svg:g
 					.attr do
-						"r": 20
+						\transform : ->"translate(#{canvas.scale.x +it.temp} #{canvas.scale.y +it.mag})"
+						\style : ->"fill:url(\#radial_#{spectrate it})"
+
+				circles = stars.append \svg:circle
+					.attr do
 						"class": "star"
+						"r": 20
 					.style do
 						"opacity": 0.9
-
-				circles
-					.attr do
-						"cx": ->canvas.scale.x +it.temp
-						"cy": ->canvas.scale.y +it.mag
-						"fill": -> "url(\##{spectrate it})"
+						"filter": -> "url(\#stellar_#{spectrate it})"
 
 				selection.exit!
 					.remove!
@@ -57,8 +103,7 @@ define <[ data/spectroscope ]>, (spectral)->
 					# Update the layer
 					layer
 						.attr \id, "herzrus"
-						.attr \transform, "translate(#{canvas.margin.left}, #{canvas.margin.right})"
-						.style \opacity, 0.9
+						.attr \transform, "translate(#{canvas.margin.left}, #{canvas.margin.top})"
 						# Draw star mag/temp data.
 						.selectAll \.star
 						.data stars
