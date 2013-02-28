@@ -18,6 +18,6 @@ require <[ canvas stencils/starmap stencils/reactions stencils/atom ]>, !(canvas
 			\x : 0
 			\y : 0
 
-	(Starmap canvas) background.append \svg:g
+	(Starmap canvas) canvas.svg.append \svg:g
 
 	(Reaction canvas) canvas.svg.append \svg:g
