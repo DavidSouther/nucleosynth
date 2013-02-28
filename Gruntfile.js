@@ -8,7 +8,8 @@ module.exports = function(grunt) {
 		jade: {
 			canvas: {
 				files: {
-					'lib/canvas/index.html': ['src/canvas/*jade']
+					'lib/canvas/index.html': ['src/canvas/index.jade'],
+					'lib/canvas/star.html': ['src/canvas/star.jade']
 				}
 			}
 		},
@@ -72,9 +73,7 @@ module.exports = function(grunt) {
 		watch: {
 			canvas: {
 				files: [
-					'src/canvas/**/*jade',
-					'src/canvas/**/*ls',
-					'src/canvas/**/*styl'
+					'src/canvas/**/*'
 				],
 				tasks: ['build-canvas']
 			}
