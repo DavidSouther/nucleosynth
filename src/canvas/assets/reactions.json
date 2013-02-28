@@ -4,7 +4,7 @@
 			"H H > 2He e v 0.42",
 			"2H H > 3He y 5.49"
 		],
-		"affinity": [5700, 5]
+		"affinity": [5840, 4.8]
 	},
 	"ppI": {
 		"reactions": [
