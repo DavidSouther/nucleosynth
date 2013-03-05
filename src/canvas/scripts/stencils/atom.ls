@@ -59,13 +59,14 @@ define <[ stencils/sphere data/elements ]>, (Sphere, elements)->
 	atom-defaults =
 		highlight: true
 		radius: 6
+		stroke: yes
 	Atom = do
 		/*
 			Given the bare description of the atom and a list of proton/neutron objects, return an array of objects
 			with an appropriate {cx, cy}.
 		 */
 		_spiral = (atom, nodes)->
-			spiral = d3.layout.spiral {spins: 1.5 * atom.period, exponent: 1/3, func: d3.layout.spiral.archimedes! }
+			spiral = d3.layout.spiral {spins: 1 * atom.period, exponent: 1/5, func: d3.layout.spiral.archimedes! }
 			d3.shuffle nodes
 			spiral nodes
 			nodes = nodes.reverse!
