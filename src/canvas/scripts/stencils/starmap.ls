@@ -41,8 +41,8 @@ define <[ data/spectroscope ]>, (spectral)->
 
 			# Gradient params
 			center = d3.random.normal 25, 25
-			rad = d3.random.logNormal 0, 0.25
-			size = -> 250 * rad!
+			rad = d3.random.logNormal 0, 0.1
+			size = -> ((canvas.size.height - it.y) + it.x) / 3 * rad!
 
 			# Reusable Star drawer
 			star = !(selection)->
@@ -50,22 +50,27 @@ define <[ data/spectroscope ]>, (spectral)->
 					.enter!
 					.append \svg:g
 					.datum ->
-						it.color = Color it.temp
-						it.filtId = filt it
-						it.gradId = grad it
-						it
+						it <<<
+							color: Color it.temp
+							filtId: filt it
+							gradId: grad it
+							x: canvas.scale.x +it.temp
+							y: canvas.scale.y +it.mag
+							r: size it
 					.attr do
 						\class : -> "star #{spectrate it}"
-						\transform : ->"translate(#{canvas.scale.x +it.temp} #{canvas.scale.y +it.mag}) scale(.1)"
+						\transform : ->"translate(#{it.x} #{it.y}) scale(.1)"
 						\style : ->"fill:url(\#radial_#{it.gradId})"
 
 				circles = stars.append \svg:circle
 					.attr do
 						"class": "star"
-						"r": 250
+						"r": -> it.r
 					.style do
 						# "opacity": 0.9
 						"filter": -> "url(\##{it.filtId})"
+						"stroke": -> it.color.darker!darker!darker!
+						"stroke-width": "1px"
 
 				selection.exit!
 					.remove!
@@ -79,7 +84,7 @@ define <[ data/spectroscope ]>, (spectral)->
 						\numOctaves : Math.round octaves!
 						\baseFrequency : frequency!
 						\type : "fractalNoise"
-						\seed : seed!
+						\seed : -> seed!
 						\in : "SourceGraphic"
 				filter.append \svg:feColorMatrix 
 					.attr do
@@ -126,7 +131,7 @@ define <[ data/spectroscope ]>, (spectral)->
 						\cy : -> center!
 						\fx : -> -center!
 						\fy : -> center!
-						\r : size!
+						\r : -> it.r
 						\gradientTransform : "matrix(1,0,0,1,0,-34)"
 						\gradientUnits : "userSpaceOnUse"
 
