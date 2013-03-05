@@ -8,8 +8,25 @@
 	},
 	"ppI": {
 		"reactions": [
-			"3He 3He > 4He 2*H 12.86"
+			"3He 3He > 4He H H 12.86"
 		],
 		"affinity": [5000, 6]
+	},
+	"ppII": {
+		"reactions": [
+			"1H 6Li > 7Be",
+			"7Be e > 7Li v",
+			"1H 7Li > 8Be",
+			"8Be > 4He 4He 3.0"
+		],
+		"affinity": [900, 12]
+	},
+	"triple-aplha": {
+		"reactions": [
+			"4He 4He > 8Be 0.093",
+			"8Be 4He > 12C 7.367",
+			"12C 4He > 16O 7.162"
+		],
+		"affinity": [4500, -1]
 	}
 }
