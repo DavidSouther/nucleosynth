@@ -5,7 +5,7 @@ define <[ stencils/atom stencils/stencil ]>, (Atom, Stencil)->
 	clusterLayout = !->
 		@energy.children = [@agents, @products]
 
-		cluster = d3.layout.cluster!size [360, 15]
+		cluster = d3.layout.cluster!size [360, 10]
 
 		@nodes = cluster.nodes @energy
 		@links = cluster.links @nodes
@@ -65,10 +65,11 @@ define <[ stencils/atom stencils/stencil ]>, (Atom, Stencil)->
 					\d : diagonal
 				.style do
 					\stroke : -> color it.mev
+					\stroke-width : "3px"
 
 			selection
 				.attr do
-					\transform : "rotate(180)"
+					\transform : ->"rotate(180) translate(#{it.x}, #{it.y})"
 				.selectAll \.reactant
 				.data -> it.agents.children ++ it.products.children
 				.call React
@@ -91,6 +92,16 @@ define <[ stencils/atom stencils/stencil ]>, (Atom, Stencil)->
 				chains = for chain, action of chains
 					action.reactions = [new Reaction reaction for reaction in action.reactions]
 					# Calculate affinity?
+
+					cluster = d3.layout.cluster!size [360, 0]
+					root = {children: action.reactions, x: 0, y: 0}
+					@nodes = cluster.nodes root
+
+					for reaction in action.reactions
+						t = reaction.x
+						reaction.x = reaction.y
+						reaction.y = 20 * Math.cos t
+
 					{
 						'chain': chain
 						'action': action
