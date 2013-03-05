@@ -8,94 +8,127 @@ define <[ data/spectroscope ]>, (spectral)->
 	# name,mag,temp
 	Starmap = do
 		# Add the named gradients for the different spectral classes.
-		prepare = !(canvas)->
+		Color = (star)->
+			spectral.color star
+
+		Grad = (canvas)->
 			defs = canvas.defs
-			grads = defs.selectAll \radialGradient
-				.data spectral.spectro
-				.enter!
+			_id=0
 
-			linear = grads.append \svg:linearGradient
-				.attr do
-					\id : ->"linear_#{spectrate it}"
-			linear.append \stop
-				.attr do
-					\stop-color : ->it.color.brighter!
-					\offset : '0%'
-			linear.append \stop
-				.attr do
-					\stop-color : ->it.color
-					\offset : '100%'
+			(star)->
+				id = "#{spectrate star}_#{_id++}"
+				"#{id}"
 
-			radial = grads.append \svg:radialGradient
-				.attr do
-					\id : ->"radial_#{spectrate it}"
-					\xlink:href : ->"\#linear_#{spectrate it}"
-					\cx : "-1"
-					\cy : "-1"
-					\fx : "-1"
-					\fy : "-1"
-					\r : "25"
-					\gradientTransform : "matrix(1,0,0,1.0658729,0,-33.938973)"
-					\gradientUnits : "userSpaceOnUse"
+		Filter = (canvas)->
+			defs = canvas.defs
+			_id=0
 
-			filter = grads.append \svg:filter
-				.attr do
-					\id : -> "stellar_#{spectrate it}"
-
-			filter.append \svg:feTurbulence 
-				.attr do
-					\numOctaves : "6"
-					\baseFrequency : "0.6"
-					\type : "fractalNoise"
-					\seed : ->Math.floor 100 * Math.random!
-					\in : "SourceGraphic"
-			filter.append \svg:feColorMatrix 
-				.attr do
-					\result : "result0"
-					\values : "1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 3 -1 "
-			filter.append \svg:feFlood 
-				.attr do
-					"flood-opacity" : "0.25"
-					"flood-color" : -> it.color.darker!darker!
-					\result : "result1"
-			filter.append \svg:feBlend 
-				.attr do
-					\in2 : "FillPaint"
-					\mode : "normal"
-					\in : "result1"
-					\result : "result2"
-			filter.append \svg:feComposite 
-				.attr do
-					\in2 : "result0"
-					\operator : "out"
-					\result : "result3"
-			filter.append \svg:feComposite 
-				.attr do
-					\in2 : "SourceGraphic"
-					\operator : "atop"
+			(star)->
+				id = "#{spectrate star}_#{_id++}"
+				"stellar_#{id}"
 
 		# Get a Starmap to draw on a certain canvas.
 		(canvas)->
-			prepare canvas
+			grad = Grad canvas
+			filt = Filter canvas
+
+			## Filter randoms
+			# Turbulance params
+			n = d3.random.normal 8, 0.2
+			octaves = -> Math.round n!
+			frequency = d3.random.normal 0.6, 0.01
+			seed = -> Math.floor 100 * Math.random!
+
+			# Gradient params
+			center = d3.random.normal 25, 25
+			rad = d3.random.logNormal 0, 0.25
+			size = -> 250 * rad!
 
 			# Reusable Star drawer
 			star = !(selection)->
-				stars = selection.enter!
+				stars = selection
+					.enter!
 					.append \svg:g
+					.datum ->
+						it.color = Color it.temp
+						it.filtId = filt it
+						it.gradId = grad it
+						it
 					.attr do
-						\transform : ->"translate(#{canvas.scale.x +it.temp} #{canvas.scale.y +it.mag})"
-						\style : ->"fill:url(\#radial_#{spectrate it})"
+						\class : -> "star #{spectrate it}"
+						\transform : ->"translate(#{canvas.scale.x +it.temp} #{canvas.scale.y +it.mag}) scale(.1)"
+						\style : ->"fill:url(\#radial_#{it.gradId})"
 
 				circles = stars.append \svg:circle
 					.attr do
 						"class": "star"
-						"r": 20
+						"r": 250
 					.style do
-						"opacity": 0.9
-						"filter": -> "url(\#stellar_#{spectrate it})"
+						# "opacity": 0.9
+						"filter": -> "url(\##{it.filtId})"
 
 				selection.exit!
 					.remove!
+
+				filter = stars.append \svg:filter
+					.attr do
+						\id : -> it.filtId
+
+				filter.append \svg:feTurbulence 
+					.attr do
+						\numOctaves : Math.round octaves!
+						\baseFrequency : frequency!
+						\type : "fractalNoise"
+						\seed : seed!
+						\in : "SourceGraphic"
+				filter.append \svg:feColorMatrix 
+					.attr do
+						\result : "result0"
+						\values : "1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 3 -1 "
+				filter.append \svg:feFlood 
+					.attr do
+						"flood-opacity" : "0.25"
+						"flood-color" : -> it.color.darker!darker!
+						\result : "result1"
+				filter.append \svg:feBlend 
+					.attr do
+						\in2 : "FillPaint"
+						\mode : "normal"
+						\in : "result1"
+						\result : "result2"
+				filter.append \svg:feComposite 
+					.attr do
+						\in2 : "result0"
+						\operator : "out"
+						\result : "result3"
+				filter.append \svg:feComposite 
+					.attr do
+						\in2 : "SourceGraphic"
+						\operator : "atop"
+
+				linear = stars.append \svg:linearGradient
+					.attr do
+						\id : -> "linear_#{it.gradId}"
+				linear.append \stop
+					.attr do
+						\stop-color : -> it.color.brighter!
+						\offset : '0%'
+				linear.append \stop
+					.attr do
+						\stop-color : -> it.color
+						\offset : '100%'
+
+				radial = stars.append \svg:radialGradient
+					.attr do
+						\id : ->"radial_#{it.gradId}"
+						\xlink:href : ->"\#linear_#{it.gradId}"
+						\cx : -> -center!
+						\cy : -> center!
+						\fx : -> -center!
+						\fy : -> center!
+						\r : size!
+						\gradientTransform : "matrix(1,0,0,1,0,-34)"
+						\gradientUnits : "userSpaceOnUse"
 
 			# Possibly override the layer to draw on. Useful for grouping.
 			!(layer)->
