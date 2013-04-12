@@ -80,7 +80,7 @@ def main():
 		stars[star.name] = star
 	wormholes = graph.walk(stars)
 	for n, s in stars.iteritems():
-		stars[n] = star.forJSON()
+		stars[n] = s.forJSON()
 	print "Stars = " + json.dumps(stars)
 	print "Wormholes = " + json.dumps(wormholes)
 
