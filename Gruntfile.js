@@ -78,6 +78,12 @@ module.exports = function(grunt) {
 						cwd: 'src/glow/scripts/',
 						src: ['**/*.js'],
 						dest: 'lib/glow/scripts/'
+					},
+					{
+						expand: true,
+						cwd: 'src/glow/textures/',
+						src: ['**/*'],
+						dest: 'lib/glow/textures/'
 					}
 				]
 			}
