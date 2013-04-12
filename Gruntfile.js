@@ -9,7 +9,8 @@ module.exports = function(grunt) {
 			canvas: {
 				files: {
 					'lib/canvas/index.html': ['src/canvas/index.jade'],
-					'lib/canvas/star.svg': ['src/canvas/star.jade']
+					'lib/canvas/star.svg': ['src/canvas/star.jade'],
+					'lib/glow/index.html': ['src/glow/index.jade']
 				}
 			}
 		},
@@ -27,17 +28,26 @@ module.exports = function(grunt) {
 				}
 			},
 			canvas: {
-				files: [{
-					expand: true,
-					cwd: 'src/canvas/scripts/',
-					src: ['**/*.ls'],
-					dest: 'lib/canvas/scripts/',
-					ext: '.js'
-				}],
+				files: [
+					{
+						expand: true,
+						cwd: 'src/canvas/scripts/',
+						src: ['**/*.ls'],
+						dest: 'lib/canvas/scripts/',
+						ext: '.js'
+					},
+					{
+						expand: true,
+						cwd: 'src/glow/scripts/',
+						src: ['**/*.ls'],
+						dest: 'lib/glow/scripts/',
+						ext: '.js'
+					}
+				],
 				options: {
 					bare: false
 				}
-			},
+			}
 		},
 		jshint: {
 			all: ['src/canvas/**/*.js']
@@ -53,15 +63,21 @@ module.exports = function(grunt) {
 				files: [
 					{
 						expand: true,
-						cwd: 'src/canvas/scripts/',
+						cwd: 'src/*/scripts/',
 						src: ['**/*.js'],
-						dest: 'lib/canvas/scripts/'
+						dest: 'lib/*/scripts/'
 					},
 					{
 						expand: true,
 						cwd: 'src/canvas/assets/',
 						src: ['**/*'],
 						dest: 'lib/canvas/assets/'
+					},
+					{
+						expand: true,
+						cwd: 'src/glow/scripts/',
+						src: ['**/*.js'],
+						dest: 'lib/glow/scripts/'
 					}
 				]
 			}

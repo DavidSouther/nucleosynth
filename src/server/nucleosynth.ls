@@ -6,8 +6,6 @@
  * Licensed under the MIT license.
  */
 
-# `jefri-server` provides an express server configured to handle jefri
-# transactions, so we'll use that first. We also need to do some express things.
 require! { express, nconf }
 server = express!
 
@@ -17,11 +15,19 @@ nconf.argv!
 	.defaults { port: 3000 }
 
 # Use index.html for /
-server.get '/', !(req, res)->
+server.get '/d3', !(req, res)->
 	res.sendfile "lib/canvas/index.html"
 
 # Otherwise, serve requests as static files from lib/canvas/
-server.use '/', express.static 'lib/canvas/'
+server.use '/d3/', express.static 'lib/canvas/'
+
+
+# Use index.html for /
+server.get '/glow', !(req, res)->
+	res.sendfile "lib/glow/index.html"
+
+# Otherwise, serve requests as static files from lib/canvas/
+server.use '/glow/', express.static 'lib/glow/'
 
 # Start the server.
 server.listen nconf.get 'port'

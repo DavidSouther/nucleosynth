@@ -1,0 +1,23 @@
+!!!
+html
+  title Stellar Neighborhood
+  meta(http-equiv="X-UA-Compatible",content="chrome=1")
+  link(type="text/css", href="http://www.glowscript.org/css/redmond/jquery-ui.custom.css", rel="stylesheet")
+  link(href="http://fonts.googleapis.com/css?family=Inconsolata", rel="stylesheet", type="text/css")
+  link(type="text/css", href="http://www.glowscript.org/css/ide.css", rel="stylesheet")
+  script(type="text/javascript", src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML")
+
+  script(type="text/javascript", src="http://www.glowscript.org/lib/jquery/jquery.min.js")
+  script(type="text/javascript", src="http://www.glowscript.org/lib/jquery/jquery-ui.custom.min.js")
+
+  script(type="text/javascript", src="http://www.glowscript.org/package/glow.1.0.min.js")
+
+  script(type="text/javascript", src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js")
+  script
+    CFInstall.check({ mode: "overlay" });
+
+  script(type="text/javascript", src="glow/scripts/data.js")
+
+body
+  #glowscript.glowscript
+    script(type="text/javascript", src="glow/scripts/starglow.js")
