@@ -37,8 +37,10 @@ class Star:
 
 	def position(self):
 		# return str(self.spherical['ascension']) + " ra " + str(self.spherical['declination']) + " d " + str(self.spherical['distance']) + " ly"
-		self.findPosition()
 		return "(" + str(self.rectilinear['x']) + ", " + str(self.rectilinear['y']) + ", " + str(self.rectilinear['z']) + ")"
+
+	def json(self):
+		return '{"name":"' + self.name + '","position":{"x":' + str(self.rectilinear['x']) + ',"y":' + str(self.rectilinear['y']) + ',"z":' + str(self.rectilinear['z']) + '}}'
 
 	@staticmethod
 	def fromWiki(line):
@@ -49,6 +51,7 @@ class Star:
 			'declination': parseHMS(line[-5]),
 			'distance': float(line[1])
 		}
+		star.findPosition()
 		return star
 
 def parseDMS(dms):
@@ -65,9 +68,8 @@ def parseHMS(hms):
 
 def main():
 	for entry in reader:
-		print entry
 		star = Star.fromWiki(entry)
-		print star
+		print star.json()
 
 if __name__ == "__main__":
 	main()
