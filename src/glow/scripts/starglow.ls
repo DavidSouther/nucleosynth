@@ -1,9 +1,8 @@
 function main
   scene = canvas!
   scene.title.text "Stars in da 'hood\n"
-  $("<div id='fps'/>").appendTo scene.title
 
-  for star in Stars
+  for name, star of Stars
     star.center = vec star.position.x, star.position.y, star.position.z
     star.color = Color star.spectral
     star.sphere = sphere do
@@ -17,6 +16,15 @@ function main
       color: star.color
 
     star.sphere.star = star;
+
+  for wormhole in Wormholes
+    pos = Stars.(wormhole.0).center
+    axis = Stars.(wormhole.1).center.sub Stars.(wormhole.0).center
+    length = axis.mag!
+    wormhole.cylinder = cylinder do
+      pos: pos
+      axis: axis.norm!
+      size: vec length, 0.1, 0.1
 
   scene.bind 'click', ->
     hit = scene.mouse.pick!
