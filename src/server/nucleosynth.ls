@@ -21,6 +21,13 @@ server.get '/d3', !(req, res)->
 # Otherwise, serve requests as static files from lib/canvas/
 server.use '/d3/', express.static 'lib/canvas/'
 
+# Use index.html for /
+server.get '/three', !(req, res)->
+	res.sendfile "lib/three/index.html"
+
+# Otherwise, serve requests as static files from lib/canvas/
+server.use '/three/', express.static 'lib/three/'
+
 
 # Use index.html for /
 server.get '/glow', !(req, res)->
